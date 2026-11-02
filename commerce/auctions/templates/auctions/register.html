@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Register | Commerce{% endblock %}
+
+{% block body %}
+<section class="auth-panel panel">
+    <h1>Register</h1>
+    {% if message %}
+        <div class="message message-error">{{ message }}</div>
+    {% endif %}
+    <form action="{% url 'register' %}" method="post" class="stacked-form">
+        {% csrf_token %}
+        <label for="username">Username</label>
+        <input autofocus id="username" name="username" type="text" required>
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required>
+        <label for="confirmation">Confirm Password</label>
+        <input id="confirmation" name="confirmation" type="password" required>
+        <button class="button" type="submit">Register</button>
+    </form>
+    <p class="muted">Already registered? <a href="{% url 'login' %}">Log in</a></p>
+</section>
+{% endblock %}

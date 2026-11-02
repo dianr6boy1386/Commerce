@@ -1,0 +1,22 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Log In | Commerce{% endblock %}
+
+{% block body %}
+<section class="auth-panel panel">
+    <h1>Log In</h1>
+    {% if message %}
+        <div class="message message-error">{{ message }}</div>
+    {% endif %}
+    <form action="{% url 'login' %}" method="post" class="stacked-form">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <label for="username">Username</label>
+        <input autofocus id="username" name="username" type="text" required>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required>
+        <button class="button" type="submit">Log In</button>
+    </form>
+    <p class="muted">Need an account? <a href="{% url 'register' %}">Register</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}{{ category.name }} | Commerce{% endblock %}
+
+{% block body %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Category</p>
+        <h1>{{ category.name }}</h1>
+    </div>
+    <a class="button button-secondary" href="{% url 'categories' %}">All Categories</a>
+</section>
+
+{% include "auctions/listing_grid.html" with listings=listings empty_text="No active listings in this category." %}
+{% endblock %}

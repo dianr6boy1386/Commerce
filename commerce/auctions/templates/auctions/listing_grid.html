@@ -1,0 +1,30 @@
+<div class="listing-grid">
+    {% for listing in listings %}
+        <article class="listing-card">
+            <a class="listing-image-link" href="{% url 'listing' listing.id %}">
+                {% if listing.image_url %}
+                    <img src="{{ listing.image_url }}" alt="{{ listing.title }}">
+                {% else %}
+                    <div class="listing-placeholder">{{ listing.title|first|upper }}</div>
+                {% endif %}
+            </a>
+            <div class="listing-card-body">
+                <div class="listing-meta">
+                    <span>{% if listing.category %}{{ listing.category.name }}{% else %}Uncategorized{% endif %}</span>
+                    <span>{{ listing.created_at|date:"M j" }}</span>
+                </div>
+                <h2><a href="{% url 'listing' listing.id %}">{{ listing.title }}</a></h2>
+                <p>{{ listing.description|truncatechars:140 }}</p>
+                <div class="listing-card-footer">
+                    <div class="listing-price-block">
+                        <strong>${{ listing.current_price }}</strong>
+                        <span class="bid-count">{{ listing.bid_count }} bid{{ listing.bid_count|pluralize }}</span>
+                    </div>
+                    <a class="text-link" href="{% url 'listing' listing.id %}">View</a>
+                </div>
+            </div>
+        </article>
+    {% empty %}
+        <p class="empty-state">{{ empty_text }}</p>
+    {% endfor %}
+</div>

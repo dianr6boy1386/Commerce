@@ -1,0 +1,22 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Categories | Commerce{% endblock %}
+
+{% block body %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Browse</p>
+        <h1>Categories</h1>
+    </div>
+</section>
+
+<div class="category-grid">
+    {% for category in categories %}
+        <a class="category-card" href="{% url 'category_listings' category.id %}">
+            <span>{{ category.name }}</span>
+        </a>
+    {% empty %}
+        <p class="empty-state">No categories have been created yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

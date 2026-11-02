@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Create Listing | Commerce{% endblock %}
+
+{% block body %}
+<section class="form-page">
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">New Auction</p>
+            <h1>Create Listing</h1>
+        </div>
+    </div>
+
+    <form method="post" class="panel stacked-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="button" type="submit">Create Listing</button>
+    </form>
+</section>
+{% endblock %}

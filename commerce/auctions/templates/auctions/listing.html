@@ -1,0 +1,142 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}{{ listing.title }} | Commerce{% endblock %}
+
+{% block body %}
+<article class="detail-layout">
+    <section class="detail-media">
+        {% if listing.image_url %}
+            <img src="{{ listing.image_url }}" alt="{{ listing.title }}">
+        {% else %}
+            <div class="detail-placeholder">{{ listing.title|first|upper }}</div>
+        {% endif %}
+    </section>
+
+    <section class="detail-panel">
+        <div class="listing-meta">
+            <span>{% if listing.category %}{{ listing.category.name }}{% else %}Uncategorized{% endif %}</span>
+            <span>{% if listing.is_active %}Active{% else %}Closed{% endif %}</span>
+        </div>
+        <h1>{{ listing.title }}</h1>
+        <p class="description">{{ listing.description }}</p>
+
+        <div class="price-row">
+            <span>Current price</span>
+            <strong>${{ listing.current_price }}</strong>
+        </div>
+        <p class="bid-summary">{{ listing.bid_count }} bid{{ listing.bid_count|pluralize }}</p>
+        <dl class="detail-list">
+            <div>
+                <dt>Starting bid</dt>
+                <dd>${{ listing.starting_bid }}</dd>
+            </div>
+            <div>
+                <dt>Total bids</dt>
+                <dd>{{ listing.bid_count }}</dd>
+            </div>
+            <div>
+                <dt>Seller</dt>
+                <dd>{{ listing.created_by.username }}</dd>
+            </div>
+            <div>
+                <dt>Created</dt>
+                <dd>{{ listing.created_at|date:"M j, Y" }}</dd>
+            </div>
+            {% if listing.winner %}
+            <div>
+                <dt>Winner</dt>
+                <dd>{{ listing.winner.username }}</dd>
+            </div>
+            {% elif not listing.is_active %}
+            <div>
+                <dt>Winner</dt>
+                <dd class="muted">No winning bid</dd>
+            </div>
+            {% endif %}
+        </dl>
+
+        {% if is_winner %}
+            <div class="message message-success">You won this auction.</div>
+        {% elif not listing.is_active and not listing.winner %}
+            <div class="message message-muted">This auction closed with no winning bid.</div>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <div class="action-row">
+                <form action="{% url 'toggle_watchlist' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="button button-secondary" type="submit">
+                        {% if is_watched %}Remove Watch{% else %}Watch Listing{% endif %}
+                    </button>
+                </form>
+
+                {% if user == listing.created_by %}
+                    {% if listing.is_active %}
+                        <form action="{% url 'close_auction' listing.id %}" method="post">
+                            {% csrf_token %}
+                            <button class="button button-warning" type="submit">Close Auction</button>
+                        </form>
+                    {% endif %}
+                    <form action="{% url 'delete_listing' listing.id %}" method="post" onsubmit="return confirm('Delete this listing permanently?');">
+                        {% csrf_token %}
+                        <button class="button button-danger" type="submit">Delete</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endif %}
+    </section>
+</article>
+
+<section class="content-grid">
+    <div class="panel">
+        <h2>Bid History</h2>
+        {% if listing.is_active and user.is_authenticated and user != listing.created_by %}
+            <form action="{% url 'place_bid' listing.id %}" method="post" class="stacked-form">
+                {% csrf_token %}
+                {{ bid_form.amount.label_tag }}
+                {{ bid_form.amount }}
+                <small>Minimum bid: ${{ min_bid|floatformat:2 }}</small>
+                <button class="button" type="submit">Place Bid</button>
+            </form>
+        {% elif listing.is_active and not user.is_authenticated %}
+            <p class="muted"><a href="{% url 'login' %}">Log in</a> to place a bid.</p>
+        {% endif %}
+
+        <ol class="activity-list">
+            {% for bid in bids %}
+                <li>
+                    <strong>${{ bid.amount }}</strong>
+                    <span>{{ bid.user.username }} on {{ bid.created_at|date:"M j, Y H:i" }}</span>
+                </li>
+            {% empty %}
+                <li>No bids yet.</li>
+            {% endfor %}
+        </ol>
+    </div>
+
+    <div class="panel">
+        <h2>Comments</h2>
+        {% if user.is_authenticated %}
+            <form action="{% url 'add_comment' listing.id %}" method="post" class="stacked-form">
+                {% csrf_token %}
+                {{ comment_form.content }}
+                <button class="button button-secondary" type="submit">Post Comment</button>
+            </form>
+        {% endif %}
+
+        <div class="comments">
+            {% for comment in comments %}
+                <div class="comment">
+                    <div>
+                        <strong>{{ comment.user.username }}</strong>
+                        <span>{{ comment.created_at|date:"M j, Y H:i" }}</span>
+                    </div>
+                    <p>{{ comment.content }}</p>
+                </div>
+            {% empty %}
+                <p class="muted">No comments yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

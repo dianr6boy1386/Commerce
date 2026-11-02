@@ -1,0 +1,14 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Watchlist | Commerce{% endblock %}
+
+{% block body %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Saved</p>
+        <h1>Watchlist</h1>
+    </div>
+</section>
+
+{% include "auctions/listing_grid.html" with listings=listings empty_text="Your watchlist is empty." %}
+{% endblock %}

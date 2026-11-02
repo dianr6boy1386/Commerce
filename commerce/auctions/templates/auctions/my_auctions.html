@@ -1,0 +1,23 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}My Auctions | Commerce{% endblock %}
+
+{% block body %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Your activity</p>
+        <h1>Auctions I Won</h1>
+    </div>
+</section>
+
+{% include "auctions/listing_grid.html" with listings=won empty_text="You haven't won any auctions yet." %}
+
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Your activity</p>
+        <h1>My Listings</h1>
+    </div>
+</section>
+
+{% include "auctions/listing_grid.html" with listings=selling empty_text="You haven't created any listings yet." %}
+{% endblock %}

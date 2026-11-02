@@ -1,0 +1,17 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}Active Listings | Commerce{% endblock %}
+
+{% block body %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Marketplace</p>
+        <h1>Active Listings</h1>
+    </div>
+    {% if user.is_authenticated %}
+        <a class="button" href="{% url 'create_listing' %}">Create Listing</a>
+    {% endif %}
+</section>
+
+{% include "auctions/listing_grid.html" with listings=listings empty_text="No active listings yet." %}
+{% endblock %}
